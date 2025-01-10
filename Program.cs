@@ -1,72 +1,97 @@
 using System.Security.Claims;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDataProtection();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<AuthService>();
+builder.Services.AddAuthentication()
+    .AddScheme<CookieAuthenticationOptions, VisitorAuthHandler>("visitor", o => {})
+    .AddCookie("local")
+    .AddCookie("patreon-cookie")
+    .AddOAuth("external-patreon", o => 
+    {
+        o.SignInScheme = "patreon-cookie";
 
-builder.Services.AddAuthentication("cookie")
-    .AddCookie("cookie");
+        o.ClientId = "id";
+        o.ClientSecret = "secret";
+
+        o.AuthorizationEndpoint = "https://oauth.wiremockapi.cloud/oauth/authorize";
+        o.TokenEndpoint = "https://oauth.wiremockapi.cloud/oauth/token";
+        o.UserInformationEndpoint = "https://oauth.wiremockapi.cloud/userinfo";
+    
+        o.CallbackPath = "/cb-patreon";
+
+        o.Scope.Add("profile");
+        o.SaveTokens = true;
+    });
+
+builder.Services.AddAuthorization(b =>
+{
+    b.AddPolicy("customer", p =>
+    {
+        p.AddAuthenticationSchemes("local", "visitor")
+            .RequireAuthenticatedUser();
+    });
+    b.AddPolicy("user", p => 
+    {
+        p.AddAuthenticationSchemes("local")
+            .RequireAuthenticatedUser();
+    });
+});
 
 
 var app = builder.Build();
 
-app.Use((ctx, next) =>
-{
-    var idp= ctx.RequestServices.GetRequiredService<IDataProtectionProvider>();
-    var protector = idp.CreateProtector("auth-cookie");
-
-    var authCookie = ctx.Request.Headers.Cookie.FirstOrDefault(x => x.StartsWith("auth="));
-    var protectedPayload = authCookie.Split("=").Last();
-    var payload = protector.Unprotect(protectedPayload);
-    var parts = payload.Split(":");
-    var key = parts[0];
-    var value = parts[1];
-
-    var claims = new List<Claim>();
-    claims.Add(new Claim(key, value));
-    var identity = new ClaimsIdentity(claims);
-    ctx.User = new ClaimsPrincipal(identity);
-
-    return next();
-});
-
 app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapGet("/username", (HttpContext ctx) => 
-{
-    return ctx.User.FindFirst("usr").Value;
-});
+app.MapGet("/", () => Task.FromResult("Hello World!")).RequireAuthorization("customer");
 
-app.MapGet("/login", async (HttpContext ctx) =>
+app.MapGet("/login-local", async (ctx) =>
 {
     var claims = new List<Claim>();
     claims.Add(new Claim("usr", "artem"));
-    var identity = new ClaimsIdentity(claims, "cookie");
+    var identity = new ClaimsIdentity(claims, "local");
     var user = new ClaimsPrincipal(identity);
-    await ctx.SignInAsync("cookie", user);
-    return "ok";
+    
+    await ctx.SignInAsync("local", user);
 });
+
+app.MapGet("/login-patreon", async (ctx) =>
+await ctx.ChallengeAsync("external-patreon", new AuthenticationProperties()
+    {
+        RedirectUri = "/"
+    })
+).RequireAuthorization("user");
 
 app.Run();
 
-public class AuthService
-{
-    private readonly IDataProtectionProvider _idp;
-    private readonly IHttpContextAccessor _accesson;
 
-    public AuthService(IDataProtectionProvider idp, IHttpContextAccessor accessor)
+public class VisitorAuthHandler : CookieAuthenticationHandler
+{
+    public VisitorAuthHandler(IOptionsMonitor<CookieAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
     {
-        _idp = idp;
-        _accesson = accessor;
     }
-    
-    public void SignIn()
+
+    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var protector = _idp.CreateProtector("auth-cookie");
-        _accesson.HttpContext.Response.Headers["set-cookie"] = $"auth={protector.Protect("usr:artem")}";
+        var result = await base.HandleAuthenticateAsync();
+        if (result.Succeeded)
+        {
+            return result;
+        }
+
+        var claims = new List<Claim>();
+        claims.Add(new Claim("usr", "artem"));
+        var identity = new ClaimsIdentity(claims, "visitor");
+        var user = new ClaimsPrincipal(identity);
+
+        await Context.SignInAsync("visitor", user);
+
+        return AuthenticateResult.Success(new AuthenticationTicket(user, "visitor"));
+
     }
 }
