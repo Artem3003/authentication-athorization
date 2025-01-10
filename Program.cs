@@ -1,97 +1,118 @@
 using System.Security.Claims;
-using System.Text.Encodings.Web;
+using IdentityManagement;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddDataProtection();
+
 builder.Services.AddAuthentication()
-    .AddScheme<CookieAuthenticationOptions, VisitorAuthHandler>("visitor", o => {})
-    .AddCookie("local")
-    .AddCookie("patreon-cookie")
-    .AddOAuth("external-patreon", o => 
-    {
-        o.SignInScheme = "patreon-cookie";
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
-        o.ClientId = "id";
-        o.ClientSecret = "secret";
-
-        o.AuthorizationEndpoint = "https://oauth.wiremockapi.cloud/oauth/authorize";
-        o.TokenEndpoint = "https://oauth.wiremockapi.cloud/oauth/token";
-        o.UserInformationEndpoint = "https://oauth.wiremockapi.cloud/userinfo";
-    
-        o.CallbackPath = "/cb-patreon";
-
-        o.Scope.Add("profile");
-        o.SaveTokens = true;
-    });
-
-builder.Services.AddAuthorization(b =>
+builder.Services.AddAuthorization(opt =>
 {
-    b.AddPolicy("customer", p =>
+    opt.AddPolicy("manager", pb =>
     {
-        p.AddAuthenticationSchemes("local", "visitor")
-            .RequireAuthenticatedUser();
-    });
-    b.AddPolicy("user", p => 
-    {
-        p.AddAuthenticationSchemes("local")
-            .RequireAuthenticatedUser();
+        pb.RequireAuthenticatedUser()
+            .AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme)
+            .RequireClaim("role", "manager");
     });
 });
 
+builder.Services.AddSingleton<Database>();
+builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
 var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/", () => Task.FromResult("Hello World!")).RequireAuthorization("customer");
-
-app.MapGet("/login-local", async (ctx) =>
+app.MapGet("/", () => Task.FromResult("Hello World!"));
+app.MapGet("/protected", () => "something super secret!").RequireAuthorization("manager");
+app.MapGet("/test", (UserManager<IdentityUser> userMgr, SignInManager<IdentityUser> signMgr) => 
 {
-    var claims = new List<Claim>();
-    claims.Add(new Claim("usr", "artem"));
-    var identity = new ClaimsIdentity(claims, "local");
-    var user = new ClaimsPrincipal(identity);
     
-    await ctx.SignInAsync("local", user);
 });
 
-app.MapGet("/login-patreon", async (ctx) =>
-await ctx.ChallengeAsync("external-patreon", new AuthenticationProperties()
+app.MapGet("/register", async (string username, string password, IPasswordHasher<User> hasher, Database db, HttpContext ctx) =>
+{
+    var user = new User() { Username = username };
+    user.PasswordHash = hasher.HashPassword(user, password);
+    await db.PutAsync(user);
+
+    await ctx.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, UserHelper.Convert(user));
+
+    return user;
+});
+
+app.MapGet("/login", async (string username, string password, IPasswordHasher<User> hasher, Database db, HttpContext ctx) =>
+{
+    var user = await db.GetUserAsync(username);
+    var result = hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+
+    if (result == PasswordVerificationResult.Failed)
     {
-        RedirectUri = "/"
-    })
-).RequireAuthorization("user");
+        return "bad credentials";
+    }
+
+    await ctx.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, UserHelper.Convert(user));
+
+    return "logged in";
+});
+
+app.MapGet("/promote", async (string username, Database db) =>
+{
+    var user = await db.GetUserAsync(username);
+    user.Claims.Add(new UserClaim() { Type = "role", Value = "manager" });
+    await db.PutAsync(user);
+    return "promoted!";
+});
+
+app.MapGet("/start-password-reset", async (string username, Database db, IDataProtectionProvider idp) =>
+{
+    var protector = idp.CreateProtector("password-reset");
+    var user = await db.GetUserAsync(username);
+    return protector.Protect(user.Username);
+});
+
+
+app.MapGet("/end-password-reset", async (string username, string password, string hash, Database db, IPasswordHasher<User> hasher, IDataProtectionProvider idp) =>
+{
+    var protector = idp.CreateProtector("password-reset");
+    var hashUsername = protector.Unprotect(hash);
+
+    if (hashUsername != username)
+    {
+        return "bad hash";
+    }
+
+    var user = await db.GetUserAsync(username);
+    user.PasswordHash = hasher.HashPassword(user, password);
+    await db.PutAsync(user);
+
+    return "password reset!";
+});
 
 app.Run();
 
 
-public class VisitorAuthHandler : CookieAuthenticationHandler
+public class UserHelper
 {
-    public VisitorAuthHandler(IOptionsMonitor<CookieAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
+    public static ClaimsPrincipal Convert(User user)
     {
-    }
-
-    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
-    {
-        var result = await base.HandleAuthenticateAsync();
-        if (result.Succeeded)
+        var claims = new List<Claim>
         {
-            return result;
-        }
+            new Claim("username", user.Username)
+        };
 
-        var claims = new List<Claim>();
-        claims.Add(new Claim("usr", "artem"));
-        var identity = new ClaimsIdentity(claims, "visitor");
-        var user = new ClaimsPrincipal(identity);
-
-        await Context.SignInAsync("visitor", user);
-
-        return AuthenticateResult.Success(new AuthenticationTicket(user, "visitor"));
-
+        claims.AddRange(user.Claims.Select(x => new Claim(x.Type, x.Value)));
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        return new ClaimsPrincipal(identity);
     }
 }
