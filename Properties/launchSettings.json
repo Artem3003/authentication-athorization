@@ -15,7 +15,8 @@
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5003",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development", 
+        "AUTH_SECRET_KEY": "TestSecretKey$02367540235902384750-23450345-32457235-2315235"
       }
     },
     "https": {
@@ -25,7 +26,7 @@
       "applicationUrl": "https://localhost:7147;http://localhost:5003",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "AUTH_SECRET_KEY": "TestSecretKey02367540235"
+        "AUTH_SECRET_KEY": "TestSecretKey$02367540235902384750-23450345-32457235-2315235"
       }
     },
     "IIS Express": {
@@ -33,7 +34,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "AUTH_SECRET_KEY": "TestSecretKey02367540235"
+        "AUTH_SECRET_KEY": "TestSecretKey$02367540235902384750-23450345-32457235-2315235"
       }
     }
   }

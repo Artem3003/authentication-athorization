@@ -16,7 +16,7 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection"));
 });
 
-builder.Services.AddIdentity<User, IdentityRole>(opt =>
+builder.Services.AddIdentity<User, Role>(opt =>
 {
     opt.Password.RequiredLength = 7;
     opt.Password.RequireDigit = false;
@@ -44,6 +44,10 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("OnlyAdminUsers", policy => policy.RequireRole("Admin"));
+});
 
 builder.Services.AddSingleton<JwtHandler>();
 

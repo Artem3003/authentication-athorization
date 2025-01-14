@@ -18,35 +18,37 @@ public class JwtHandler
     public JwtHandler(IConfiguration configuration)
     {
         this.configuration = configuration;
-        jwtSettings = configuration.GetSection("JwtSettings");
+        jwtSettings = configuration.GetSection("JWTSettings");
     }
 
-    public string CreateToken(User user)
+    public string CreateToken(User user, IList<string> roles)
     {
         var signingCredentials = GetSigningCredentials();
-        var claims = GetClaims(user);
+        var claims = GetClaims(user, roles);
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
         return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
     }
     
     private SigningCredentials GetSigningCredentials()
     {
-        var securityKey = Environment.GetEnvironmentVariable("AUTH_SECRET_KEY");
-        if (string.IsNullOrEmpty(securityKey))
-        {
-            throw new InvalidOperationException("Security key is not configured properly.");
-        }
+        var securityKey = Environment.GetEnvironmentVariable("AUTH_SECRET_KEY") ?? throw new InvalidOperationException("Authentication secret key is not configured.");
+
         var key = Encoding.UTF8.GetBytes(securityKey);
         var secret = new SymmetricSecurityKey(key);
         return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
     }
 
-    private List<Claim> GetClaims(User user)
+    private List<Claim> GetClaims(User user, IList<string> roles)
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.UserName)
+            new Claim(ClaimTypes.Name, user.UserName!)
         };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
         return claims;
     }
 

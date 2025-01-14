@@ -31,7 +31,7 @@ public class AccountsController : ControllerBase
 
         var user = mapper.Map<User>(userForRegistrationDto);
 
-        var result = await userManager.CreateAsync(user, userForRegistrationDto.Password);
+        var result = await userManager.CreateAsync(user, userForRegistrationDto.Password!);
 
         if (!result.Succeeded)
         {
@@ -39,6 +39,8 @@ public class AccountsController : ControllerBase
         
             return BadRequest(new RegistrationResponseDto { IsSuccessfulRegistration = false, Errors = errors });
         }
+
+        await userManager.AddToRoleAsync(user, "Visitor");
 
         return Created("", result);
     }
@@ -51,7 +53,8 @@ public class AccountsController : ControllerBase
         if (user is null || !await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password!))
             return Unauthorized(new RegistrationResponseDto { IsSuccessfulRegistration = false, Errors = new[] { "Invalid Authentication" } });
 
-        var token = jwtHandler.CreateToken(user);
+        var roles = await userManager.GetRolesAsync(user);
+        var token = jwtHandler.CreateToken(user, roles);
 
         return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
     }
