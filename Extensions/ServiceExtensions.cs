@@ -1,0 +1,56 @@
+using System.Text;
+using IdentityUserRegistration.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+namespace IdentityUserRegistration.Extensions;
+
+public static class ServiceExtensions
+{
+    public static void ConfigureSQLContext(this IServiceCollection services, IConfiguration configuration) =>
+        services.AddDbContext<DatabaseContext>(options =>
+        {
+            options.UseSqlServer(configuration.GetConnectionString("sqlConnection"));
+        });
+
+    public static void ConfigureIdentity(this IServiceCollection services) =>
+        services.AddIdentity<User, Role>(opt =>
+        {
+            opt.Password.RequiredLength = 7;
+            opt.Password.RequireDigit = false;
+            opt.Password.RequireUppercase = false;
+        }).AddEntityFrameworkStores<DatabaseContext>();
+
+    public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection("JWTSettings");
+        var secretKey = Environment.GetEnvironmentVariable("AUTH_SECRET_KEY") ?? throw new InvalidOperationException("Authentication secret key is not configured.");
+
+        services.AddAuthentication(opt =>
+        {
+            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(opt =>
+        {
+            opt.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["validIssuer"],
+                ValidAudience = jwtSettings["validAudience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            };
+        });
+    }
+    
+    public static void ConfigureAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorization(opt =>
+        {
+            opt.AddPolicy("OnlyAdminUsers", policy => policy.RequireRole("Admin"));
+        });
+    }
+}
