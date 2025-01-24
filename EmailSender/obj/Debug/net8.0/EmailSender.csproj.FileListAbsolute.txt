@@ -1,0 +1,13 @@
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\bin\Debug\net8.0\EmailSender.deps.json
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\bin\Debug\net8.0\EmailSender.dll
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\bin\Debug\net8.0\EmailSender.pdb
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.AssemblyInfoInputs.cache
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.AssemblyInfo.cs
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.csproj.CoreCompileInputs.cache
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.sourcelink.json
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.dll
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\refint\EmailSender.dll
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.pdb
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\ref\EmailSender.dll
+C:\Users\Artem\Documents\Csharp\authentication-athorization\EmailSender\obj\Debug\net8.0\EmailSender.csproj.AssemblyReference.cache
