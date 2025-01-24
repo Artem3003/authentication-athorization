@@ -1,53 +1,22 @@
-using Microsoft.AspNetCore.Identity;
 using IdentityUserRegistration;
-using Microsoft.EntityFrameworkCore;
 using IdentityUserRegistration.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using IdentityUserRegistration.JwtFeatures;
+using IdentityUserRegistration.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services.AddDbContext<DatabaseContext>(options => 
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("sqlConnection"));
-});
-
-builder.Services.AddIdentity<User, Role>(opt =>
-{
-    opt.Password.RequiredLength = 7;
-    opt.Password.RequireDigit = false;
-    opt.Password.RequireUppercase = false;
-})
-    .AddEntityFrameworkStores<DatabaseContext>();
-
-var jwtSettings = builder.Configuration.GetSection("JWTSettings");
-builder.Services.AddAuthentication(opt => 
-{
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(opt =>
-{
-    var secretKey = Environment.GetEnvironmentVariable("AUTH_SECRET_KEY") ?? throw new InvalidOperationException("Authentication secret key is not configured.");
-    opt.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["validIssuer"],
-        ValidAudience = jwtSettings["validAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-    };
-});
-
-builder.Services.AddAuthorization(opt =>
-{
-    opt.AddPolicy("OnlyAdminUsers", policy => policy.RequireRole("Admin"));
-});
+builder.Services.ConfigureSQLContext(builder.Configuration);
+builder.Services.ConfigureEmailService(builder.Configuration);
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.ConfigureAuthorization();
 
 builder.Services.AddSingleton<JwtHandler>();
 

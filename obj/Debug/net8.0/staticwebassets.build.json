@@ -1,11 +1,12 @@
 {
   "Version": 1,
-  "Hash": "abF8I/62EkdLr3zk3rhMqjanyr8pwfH5jC0hTQME7fc=",
+  "Hash": "YJF4UOD8kF6f32SJaMSW22QICTwdC50Q+DgqV1WAIXk=",
   "Source": "authentication-athorization",
   "BasePath": "_content/authentication-athorization",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": []
+  "Assets": [],
+  "Endpoints": []
 }

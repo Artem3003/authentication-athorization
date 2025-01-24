@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "authentication-athorization", "authentication-athorization.csproj", "{F2BC2DCA-990D-4CFF-88FB-A5253325BE39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "authentication-athorization", "authentication-athorization.csproj", "{743E74AE-F10F-46EF-B986-DED002277A53}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailSender", "EmailSender\EmailSender.csproj", "{F5448BAC-A563-4F93-81BA-A60F6F499CC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +13,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F2BC2DCA-990D-4CFF-88FB-A5253325BE39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2BC2DCA-990D-4CFF-88FB-A5253325BE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2BC2DCA-990D-4CFF-88FB-A5253325BE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2BC2DCA-990D-4CFF-88FB-A5253325BE39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{743E74AE-F10F-46EF-B986-DED002277A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{743E74AE-F10F-46EF-B986-DED002277A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{743E74AE-F10F-46EF-B986-DED002277A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{743E74AE-F10F-46EF-B986-DED002277A53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5448BAC-A563-4F93-81BA-A60F6F499CC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5448BAC-A563-4F93-81BA-A60F6F499CC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5448BAC-A563-4F93-81BA-A60F6F499CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5448BAC-A563-4F93-81BA-A60F6F499CC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7C9CE1ED-F473-4CE4-BB90-E844F881452D}
+		SolutionGuid = {91E5497C-739D-4E6A-943E-E5D5AD5129DF}
 	EndGlobalSection
 EndGlobal

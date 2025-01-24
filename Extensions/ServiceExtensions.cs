@@ -1,6 +1,8 @@
 using System.Text;
+using EmailService;
 using IdentityUserRegistration.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,13 +16,21 @@ public static class ServiceExtensions
             options.UseSqlServer(configuration.GetConnectionString("sqlConnection"));
         });
 
-    public static void ConfigureIdentity(this IServiceCollection services) =>
+    public static void ConfigureIdentity(this IServiceCollection services)
+    {
         services.AddIdentity<User, Role>(opt =>
         {
             opt.Password.RequiredLength = 7;
             opt.Password.RequireDigit = false;
             opt.Password.RequireUppercase = false;
-        }).AddEntityFrameworkStores<DatabaseContext>();
+        }).AddEntityFrameworkStores<DatabaseContext>()
+        .AddDefaultTokenProviders();
+
+        services.Configure<DataProtectionTokenProviderOptions>(opt =>
+        {
+            opt.TokenLifespan = TimeSpan.FromHours(2);
+        });
+    }
 
     public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {
@@ -52,5 +62,12 @@ public static class ServiceExtensions
         {
             opt.AddPolicy("OnlyAdminUsers", policy => policy.RequireRole("Admin"));
         });
+    }
+
+    public static void ConfigureEmailService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+        services.AddSingleton(emailConfig);
+        services.AddScoped<IEmailSender, EmailSender>();
     }
 }
