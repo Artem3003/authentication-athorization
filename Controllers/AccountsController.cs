@@ -84,7 +84,7 @@ public class AccountsController : ControllerBase
         };
 
         // Encoding token
-        var callback = QueryHelpers.AddQueryString(forgotPassword.ClientURI!, param);
+        var callback = QueryHelpers.AddQueryString(forgotPassword.ClientURI!, param!);
 
         var message = new Message(new string[] { user.Email! }, "Reset password token", callback);
 

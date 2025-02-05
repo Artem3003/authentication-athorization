@@ -67,7 +67,7 @@ public static class ServiceExtensions
     public static void ConfigureEmailService(this IServiceCollection services, IConfiguration configuration)
     {
         var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
-        services.AddSingleton(emailConfig);
+        services.AddSingleton(emailConfig!);
         services.AddScoped<IEmailSender, EmailSender>();
     }
 }
