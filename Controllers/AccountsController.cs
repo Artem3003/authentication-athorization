@@ -1,5 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using authentication_athorization.DTO;
+using authentication_athorization.Interfaces;
 using AutoMapper;
 using EmailService;
 using IdentityUserRegistration.DTO;
@@ -19,13 +21,15 @@ public class AccountsController : ControllerBase
     private readonly IMapper mapper;
     private readonly JwtHandler jwtHandler;
     private readonly IEmailSender emailSender;
+    private readonly  ITotpService totpService;
 
-    public AccountsController(UserManager<User> userManager, IMapper mapper, JwtHandler jwtHandler, IEmailSender emailSender)
+    public AccountsController(UserManager<User> userManager, IMapper mapper, JwtHandler jwtHandler, IEmailSender emailSender, ITotpService totpService)
     {
         this.userManager = userManager;
         this.mapper = mapper;
         this.jwtHandler = jwtHandler;
         this.emailSender = emailSender;
+        this.totpService = totpService;
     }
 
     [HttpPost("register")]
@@ -35,6 +39,11 @@ public class AccountsController : ControllerBase
             return BadRequest("User object is null");
 
         var user = mapper.Map<User>(userForRegistrationDto);
+
+        var secretKey = totpService.GenerateSecretKey();
+        user.EnctyptedSecretKey = EncryptSecretKey(secretKey);
+        var uri = totpService.GenerateQrCodeUrl(user.Email!, secretKey);
+        var qrCodeImage = totpService.GenerateQRCode(uri);
 
         var result = await userManager.CreateAsync(user, userForRegistrationDto.Password!);
 
@@ -47,7 +56,7 @@ public class AccountsController : ControllerBase
 
         await userManager.AddToRoleAsync(user, "Visitor");
 
-        return Created("", result);
+        return Created("", new { result, qrCodeImage} );
     }
 
     [HttpPost("authenticate")]
@@ -122,5 +131,31 @@ public class AccountsController : ControllerBase
         }
 
         return Ok();        
+    }
+
+    [HttpPost("validateotp")]
+    public async Task<IActionResult> ValidateOtp([FromBody] ValidateOtpDto validateOtpDto)
+    {
+        var user = await userManager.FindByEmailAsync(validateOtpDto.Email!);
+
+        if (user is null)
+            return BadRequest("Invalid Request. User is not registered.");  
+
+        var decryptedSecretKey = DecryptSecretKey(user.EnctyptedSecretKey!);
+        var isValidOtp = totpService.ValidateOTP(decryptedSecretKey, validateOtpDto.Code!);
+
+        if (!isValidOtp)
+            return BadRequest("Invalid OTP");
+
+        return Ok();
+    }
+
+    private static string EncryptSecretKey(string secretKey)
+    {
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes(secretKey));
+    }
+    private static string DecryptSecretKey(string encryptedSecretKey)
+    {
+        return Encoding.UTF8.GetString(Convert.FromBase64String(encryptedSecretKey));
     }
 }

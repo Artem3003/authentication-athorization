@@ -265,11 +265,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
+      "projectUniqueName": "c:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
       "projectName": "EmailSender",
-      "projectPath": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
+      "projectPath": "c:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
       "packagesPath": "C:\\Users\\Artem\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\obj\\",
+      "outputPath": "c:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Artem\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -296,7 +296,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
       "net8.0": {
@@ -327,7 +327,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

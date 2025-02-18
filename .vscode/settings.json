@@ -1,0 +1,5 @@
+{
+    "dataworkspace.excludedProjects": [
+        "IdentityYT/IdentityYT.sqlproj"
+    ]
+}
