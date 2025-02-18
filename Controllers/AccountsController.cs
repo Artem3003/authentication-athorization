@@ -54,18 +54,37 @@ public class AccountsController : ControllerBase
             return BadRequest(new RegistrationResponseDto { IsSuccessfulRegistration = false, Errors = errors });
         }
 
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+        var param = new Dictionary<string, string>
+        {
+            {"token", token},
+            {"email", user.Email!}
+        };
+
+        var callback = QueryHelpers.AddQueryString(userForRegistrationDto.ClientUri!, param!);
+
+        var message = new Message(new string[] { user.Email! }, "Email Confirmation token", callback);
+
+        await emailSender.SendEmailAsync(message);
+
         await userManager.AddToRoleAsync(user, "Visitor");
 
         return Created("", new { result, qrCodeImage} );
-    }
+    }    
 
     [HttpPost("authenticate")]
     public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto userForAuthenticationDto)
     {
         var user = await userManager.FindByNameAsync(userForAuthenticationDto.Email!);
 
-        if (user is null || !await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password!))
-            return Unauthorized(new RegistrationResponseDto { IsSuccessfulRegistration = false, Errors = new[] { "Invalid Authentication" } });
+        if (user is null)
+            return BadRequest("Invalid Request. User is not registered.");
+
+        if (!await userManager.IsEmailConfirmedAsync(user))
+            return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "Email is not confirmed" });
+
+        if (!await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password!))
+            return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
 
         var roles = await userManager.GetRolesAsync(user);
         var token = jwtHandler.CreateToken(user, roles);
@@ -149,7 +168,22 @@ public class AccountsController : ControllerBase
 
         return Ok();
     }
+    
+    [HttpGet("emailconfiramtion")]
+    public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
+    {
+        var user = await userManager.FindByEmailAsync(email);
 
+        if (user is null)
+            return BadRequest("Invalid Request. User is not registered.");
+
+        var result = await userManager.ConfirmEmailAsync(user, token);
+
+        if (!result.Succeeded)
+            return BadRequest("Invalid Request. Email cannot be confirmed.");
+
+        return Ok();
+    }
     private static string EncryptSecretKey(string secretKey)
     {
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(secretKey));

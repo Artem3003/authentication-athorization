@@ -15,4 +15,6 @@ public class UserForRegistrationDto
 
     [Compare("Password", ErrorMessage = "The passowrd and confimation password do not match.")]
     public string? ConfirmPassword { get; set; }
+
+    public string? ClientUri { get; set; }
 }
