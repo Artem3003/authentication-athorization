@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using UserLockoutIdentity;
 
 namespace IdentityUserRegistration.Extensions;
 
@@ -23,8 +24,13 @@ public static class ServiceExtensions
             opt.Password.RequiredLength = 7;
             opt.Password.RequireDigit = false;
             opt.Password.RequireUppercase = false;
+
+            opt.Lockout.AllowedForNewUsers = true;
+            opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+            opt.Lockout.MaxFailedAccessAttempts = 3;
         }).AddEntityFrameworkStores<DatabaseContext>()
-        .AddDefaultTokenProviders();
+        .AddDefaultTokenProviders()
+        .AddPasswordValidator<CustomPasswordValidator<User>>();
 
         services.Configure<DataProtectionTokenProviderOptions>(opt =>
         {

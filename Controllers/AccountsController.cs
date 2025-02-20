@@ -80,14 +80,33 @@ public class AccountsController : ControllerBase
         if (user is null)
             return BadRequest("Invalid Request. User is not registered.");
 
+        if (await userManager.IsLockedOutAsync(user))
+            return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "User account is locked out." });
+
         if (!await userManager.IsEmailConfirmedAsync(user))
             return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "Email is not confirmed" });
 
         if (!await userManager.CheckPasswordAsync(user, userForAuthenticationDto.Password!))
+        {
+            await userManager.AccessFailedAsync(user);
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                var content = $"Your account is locked out. If you want to reset the password, " + $"you can use the Forgot Password link on the login page";
+
+                var message = new Message(new string[] { userForAuthenticationDto.Email! }, "Account Locked", content);
+
+                await emailSender.SendEmailAsync(message);
+
+                return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "User account is locked out." });
+            }
+
             return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
+        }
 
         var roles = await userManager.GetRolesAsync(user);
         var token = jwtHandler.CreateToken(user, roles);
+
+        await userManager.ResetAccessFailedCountAsync(user);
 
         return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
     }
@@ -149,6 +168,8 @@ public class AccountsController : ControllerBase
             return BadRequest(new { Errors = errors });
         }
 
+        await userManager.SetLockoutEndDateAsync(user, null);
+
         return Ok();        
     }
 
@@ -169,7 +190,7 @@ public class AccountsController : ControllerBase
         return Ok();
     }
     
-    [HttpGet("emailconfiramtion")]
+    [HttpGet("emailconfirmation")]
     public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
     {
         var user = await userManager.FindByEmailAsync(email);
@@ -184,6 +205,7 @@ public class AccountsController : ControllerBase
 
         return Ok();
     }
+
     private static string EncryptSecretKey(string secretKey)
     {
         return Convert.ToBase64String(Encoding.UTF8.GetBytes(secretKey));
