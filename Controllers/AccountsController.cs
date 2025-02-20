@@ -10,6 +10,7 @@ using IdentityUserRegistration.JwtFeatures;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace authentication_athorization.Controllers;
 
@@ -53,6 +54,8 @@ public class AccountsController : ControllerBase
         
             return BadRequest(new RegistrationResponseDto { IsSuccessfulRegistration = false, Errors = errors });
         }
+
+        await userManager.SetTwoFactorEnabledAsync(user, true);
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         var param = new Dictionary<string, string>
@@ -103,6 +106,9 @@ public class AccountsController : ControllerBase
             return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, ErrorMessage = "Invalid Authentication" });
         }
 
+        if (await userManager.GetTwoFactorEnabledAsync(user))
+            return await GenerateOTPFor2StepVerification(user);
+
         var roles = await userManager.GetRolesAsync(user);
         var token = jwtHandler.CreateToken(user, roles);
 
@@ -110,6 +116,26 @@ public class AccountsController : ControllerBase
 
         return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token });
     }
+
+    [HttpPost("twofactor")]
+    public async Task<IActionResult> TwoFactor([FromBody] TwoFactorDto twoFactorDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest();
+
+        var user = await userManager.FindByEmailAsync(twoFactorDto.Email!);
+
+        if (user is null)
+            return BadRequest("Invalid Request. User is not registered.");
+
+        var validVerification = await userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider!, twoFactorDto.Token!);
+
+        var roles = await userManager.GetRolesAsync(user);
+        var token = jwtHandler.CreateToken(user, roles);
+
+        return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token});
+    }
+
 
     [HttpPost("forgotpassword")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPassword)
@@ -204,6 +230,22 @@ public class AccountsController : ControllerBase
             return BadRequest("Invalid Request. Email cannot be confirmed.");
 
         return Ok();
+    }
+
+    private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
+    {
+        var providers = await userManager.GetValidTwoFactorProvidersAsync(user);
+
+        if (!providers.Contains("Email"))
+            return Unauthorized(new AuthResponseDto { IsAuthSuccessful = false, Is2FactorRequired = false, ErrorMessage = "Invalid 2-Factor Provider." });            
+    
+        var token = await userManager.GenerateTwoFactorTokenAsync(user, "Email");
+        
+        var message = new Message(new string[] { user.Email! }, "Authentication token", token);
+
+        await emailSender.SendEmailAsync(message);
+
+        return Ok(new AuthResponseDto { Is2FactorRequired = true, Provider = "Email" });
     }
 
     private static string EncryptSecretKey(string secretKey)
