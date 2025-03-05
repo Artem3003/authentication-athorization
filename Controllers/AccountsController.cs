@@ -1,7 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using authentication_athorization.DTO;
-using authentication_athorization.Interfaces;
+using IdentityUserRegistration.Interfaces;
 using AutoMapper;
 using EmailService;
 using IdentityUserRegistration.DTO;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Org.BouncyCastle.Asn1.X509;
 
-namespace authentication_athorization.Controllers;
+namespace IdentityUserRegistration.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -41,6 +40,7 @@ public class AccountsController : ControllerBase
 
         var user = mapper.Map<User>(userForRegistrationDto);
 
+        // Create qr code for 2FAm
         var secretKey = totpService.GenerateSecretKey();
         user.EnctyptedSecretKey = EncryptSecretKey(secretKey);
         var uri = totpService.GenerateQrCodeUrl(user.Email!, secretKey);

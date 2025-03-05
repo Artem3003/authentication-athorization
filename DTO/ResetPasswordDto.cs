@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Identity.Client;
 
-namespace authentication_athorization.DTO;
+namespace IdentityUserRegistration.DTO;
 
 public class ResetPasswordDto
 {

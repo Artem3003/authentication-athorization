@@ -21,9 +21,17 @@ public static class ServiceExtensions
     {
         services.AddIdentity<User, Role>(opt =>
         {
+            opt.Password.RequireNonAlphanumeric = false;
             opt.Password.RequiredLength = 7;
             opt.Password.RequireDigit = false;
             opt.Password.RequireUppercase = false;
+            opt.Password.RequireLowercase = false;
+
+            opt.User.RequireUniqueEmail = true;
+
+            opt.SignIn.RequireConfirmedEmail = false;
+            opt.SignIn.RequireConfirmedAccount = false;
+            opt.SignIn.RequireConfirmedPhoneNumber = false;
 
             opt.Lockout.AllowedForNewUsers = true;
             opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);

@@ -1,7 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace authentication_athorization.DTO;
+namespace IdentityUserRegistration.DTO;
 
 public class ForgotPasswordDto
 {

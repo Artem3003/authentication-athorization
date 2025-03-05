@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace authentication_athorization.Interfaces;
+namespace IdentityUserRegistration.Interfaces;
 
 public interface ITotpService
 {

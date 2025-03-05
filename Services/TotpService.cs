@@ -1,8 +1,8 @@
-using authentication_athorization.Interfaces;
+using IdentityUserRegistration.Interfaces;
 using OtpNet;
 using QRCoder;
 
-namespace authentication_athorization.Services;
+namespace IdentityUserRegistration.Services;
 
 public class TotpService : ITotpService
 {

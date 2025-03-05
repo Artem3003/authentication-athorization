@@ -185,3 +185,8 @@ C:\Users\Artem\Documents\Csharp\authentication-athorization\bin\Debug\net8.0\Sys
 C:\Users\Artem\Documents\Csharp\authentication-athorization\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\Artem\Documents\Csharp\authentication-athorization\bin\Debug\net8.0\Otp.NET.dll
 C:\Users\Artem\Documents\Csharp\authentication-athorization\bin\Debug\net8.0\QRCoder.dll
+C:\Users\Artem\Documents\Csharp\authentication-athorization\obj\Debug\net8.0\authentication-athorization.RazorAssemblyInfo.cache
+C:\Users\Artem\Documents\Csharp\authentication-athorization\obj\Debug\net8.0\authentication-athorization.RazorAssemblyInfo.cs
+C:\Users\Artem\Documents\Csharp\authentication-athorization\bin\Debug\net8.0\authentication-athorization.staticwebassets.runtime.json
+C:\Users\Artem\Documents\Csharp\authentication-athorization\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\Artem\Documents\Csharp\authentication-athorization\obj\Debug\net8.0\scopedcss\projectbundle\authentication-athorization.bundle.scp.css
