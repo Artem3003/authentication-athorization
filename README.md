@@ -1,11 +1,11 @@
 ## Login
 
-![](/videos/Login.mov)
+![](/videos/Login.gif)
 
 ## Registration
 
-![](/videos/Register.mov)
+![](/videos/Register.gif)
 
 ## ForgotPassword
 
-![](/videos/ForgotPassoword.mov)
+![](/videos/ForgotPassoword.gif)
