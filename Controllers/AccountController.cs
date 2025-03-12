@@ -36,12 +36,6 @@ public class AccountController : Controller
         return View();
     }
 
-    [HttpGet("Register")]
-    public IActionResult Register()
-    {
-        return View();
-    }
-
     [HttpPost("Login")]
     public async Task<IActionResult> Login(LoginViewModel loginViewModel)
     {
@@ -62,6 +56,12 @@ public class AccountController : Controller
             }
         }
         return View(loginViewModel);
+    }
+
+    [HttpGet("Register")]
+    public IActionResult Register()
+    {
+        return View();
     }
 
     [HttpPost("Register")]
@@ -142,7 +142,7 @@ public class AccountController : Controller
                 if (result.Succeeded)
                 {
                     logger.LogInformation("Password removed.");
-                    result = await userManager.AddPasswordAsync(user, changePasswordViewModel.NewPassword!);
+                    _ = await userManager.AddPasswordAsync(user, changePasswordViewModel.NewPassword!);
                     return RedirectToAction("Login", "Account");
                 }
                 else
@@ -167,10 +167,11 @@ public class AccountController : Controller
         }
     }
 
-    [HttpPost("Logout")]
+    [HttpGet("Logout")]
     public async Task<IActionResult> Logout()
     {
         await signInManager.SignOutAsync();
+        logger.LogInformation("User logged out.");
         return RedirectToAction("Index", "Home");
     }
 }

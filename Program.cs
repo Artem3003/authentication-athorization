@@ -12,7 +12,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureSQLContext(builder.Configuration);
 builder.Services.ConfigureEmailService(builder.Configuration);
 builder.Services.ConfigureIdentity();
-builder.Services.ConfigureJWT(builder.Configuration);
+// builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureAuthorization();
 
 builder.Services.AddSingleton<ITotpService, TotpService>();
@@ -34,6 +34,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
