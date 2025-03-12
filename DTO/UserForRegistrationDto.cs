@@ -13,6 +13,6 @@ public class UserForRegistrationDto
     [Required(ErrorMessage = "Password is required")] 
     public string? Password { get; set; }
 
-    [Compare("Password", ErrorMessage = "The passowrd and confimation password do not match.")]
+    [Compare("Password", ErrorMessage = "The passoword and confimation password do not match.")]
     public string? ConfirmPassword { get; set; }
 }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5siq3GAuxNE=",
+  "dgSpecHash": "O5ryRGltJP8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\authentication-athorization.csproj",
+  "projectFilePath": "C:\\Users\\Artem\\Downloads\\authentication-athorization\\authentication-athorization.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Artem\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Artem\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

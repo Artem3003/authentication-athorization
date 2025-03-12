@@ -12,7 +12,7 @@ namespace authentication_athorization.Controllers;
 public class TestController : ControllerBase
 {
     [HttpGet]
-    [Authorize(Policy = "OnlyAdminUsers")]
+    [Authorize(Policy = "ForVisitors")]
     public IActionResult Get()
     {
         return Ok("Hello World");

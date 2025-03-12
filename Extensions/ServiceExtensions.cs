@@ -61,6 +61,7 @@ public static class ServiceExtensions
         services.AddAuthorization(opt =>
         {
             opt.AddPolicy("OnlyAdminUsers", policy => policy.RequireRole("Admin"));
+            opt.AddPolicy("ForVisitors", policy => policy.RequireRole("Visitor", "Admin"));
         });
     }
 
