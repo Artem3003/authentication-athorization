@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("authentication-athorization")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5039bb2e1f165cc24539f8d336ce4c0533f0e76")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+986cfae99895111796fb5bb8a49a3ec4557ee736")]
 [assembly: System.Reflection.AssemblyProductAttribute("authentication-athorization")]
 [assembly: System.Reflection.AssemblyTitleAttribute("authentication-athorization")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
