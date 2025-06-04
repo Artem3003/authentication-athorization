@@ -22,4 +22,11 @@ public class HomeController : Controller
     {
         return View();
     }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult Binance()
+    {
+        return View();
+    }
 }

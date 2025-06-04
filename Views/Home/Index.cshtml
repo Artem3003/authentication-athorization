@@ -5,4 +5,20 @@
 <div class="text-center">
     <h1 class="display-4">@ViewData["Title"]</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="alert alert-info">
+            <p>Welcome back, @User.Identity.Name!</p>
+            <p>
+                <a class="btn btn-primary" href="/Home/Binance">Go to Binance Page</a>
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            <p>Please <a href="/Account/Login">log in</a> to access more features.</p>
+        </div>
+    }
 </div>
