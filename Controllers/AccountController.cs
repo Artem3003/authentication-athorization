@@ -1,16 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 using AutoMapper;
 using IdentityUserRegistration.Entities;
-using IdentityUserRegistration.JwtFeatures;
 using IdentityUserRegistration.VM;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Logging;
 
 namespace IdentityUserRegistration.Controllers;
 
@@ -173,5 +166,58 @@ public class AccountController : Controller
         await signInManager.SignOutAsync();
         logger.LogInformation("User logged out.");
         return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet("ExternalLogin")]
+    public IActionResult ExternalLogin(string provider, string returnUrl = "/")
+    {
+        var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+        var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+        return Challenge(properties, provider);
+    }
+
+    [HttpGet("/callback")]
+    public async Task<IActionResult> ExternalLoginCallback(string returnUrl = "/")
+    {
+        var info = await signInManager.GetExternalLoginInfoAsync();
+        if (info == null) return RedirectToAction(nameof(Login));
+
+        var result = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+        if (result.Succeeded) return LocalRedirect(returnUrl);
+
+        // Extract claims
+        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+        var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName);
+        var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname);
+
+        // Create Identity User if not exists
+        var user = new User
+        {
+            UserName = email,
+            Email = email,
+            FirstName = firstName ?? name?.Split(' ').FirstOrDefault(),
+            LastName = lastName ?? name?.Split(' ').Skip(1).FirstOrDefault(),
+            EmailConfirmed = true
+        };
+
+        var identityResult = await userManager.CreateAsync(user);
+        if (!identityResult.Succeeded)
+        {
+            foreach (var error in identityResult.Errors)
+                ModelState.AddModelError("", error.Description);
+            return RedirectToAction(nameof(Login));
+        }
+
+        identityResult = await userManager.AddLoginAsync(user, info);
+        if (!identityResult.Succeeded)
+        {
+            foreach (var error in identityResult.Errors)
+                ModelState.AddModelError("", error.Description);
+            return RedirectToAction(nameof(Login));
+        }
+
+        await signInManager.SignInAsync(user, isPersistent: false);
+        return LocalRedirect(returnUrl);
     }
 }

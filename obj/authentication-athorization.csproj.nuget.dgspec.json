@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\authentication-athorization.csproj": {}
+    "D:\\Csharp\\authentication-athorization\\authentication-athorization.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\authentication-athorization.csproj": {
+    "D:\\Csharp\\authentication-athorization\\authentication-athorization.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\authentication-athorization.csproj",
+        "projectUniqueName": "D:\\Csharp\\authentication-athorization\\authentication-athorization.csproj",
         "projectName": "authentication-athorization",
-        "projectPath": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\authentication-athorization.csproj",
+        "projectPath": "D:\\Csharp\\authentication-athorization\\authentication-athorization.csproj",
         "packagesPath": "C:\\Users\\Artem\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\obj\\",
+        "outputPath": "D:\\Csharp\\authentication-athorization\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Artem\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -48,6 +48,14 @@
               "target": "Package",
               "version": "[12.0.1, )"
             },
+            "Casdoor.AspNetCore": {
+              "target": "Package",
+              "version": "[1.16.0, )"
+            },
+            "Casdoor.Client": {
+              "target": "Package",
+              "version": "[1.16.0, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.9.0, )"
@@ -80,6 +88,10 @@
               "target": "Package",
               "version": "[9.0.0, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "Otp.NET": {
               "target": "Package",
               "version": "[1.4.0, )"
@@ -103,19 +115,19 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.13, 8.0.13]"
+              "version": "[8.0.17, 8.0.17]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.13, 8.0.13]"
+              "version": "[8.0.17, 8.0.17]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.13, 8.0.13]"
+              "version": "[8.0.17, 8.0.17]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.13, 8.0.13]"
+              "version": "[8.0.17, 8.0.17]"
             }
           ],
           "frameworkReferences": {
@@ -126,7 +138,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.205/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

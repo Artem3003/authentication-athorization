@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj": {}
+    "D:\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj": {
+    "D:\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
+        "projectUniqueName": "D:\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
         "projectName": "EmailSender",
-        "projectPath": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
+        "projectPath": "D:\\Csharp\\authentication-athorization\\EmailSender\\EmailSender.csproj",
         "packagesPath": "C:\\Users\\Artem\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Artem\\Documents\\Csharp\\authentication-athorization\\EmailSender\\obj\\",
+        "outputPath": "D:\\Csharp\\authentication-athorization\\EmailSender\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Artem\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -67,15 +67,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.13, 8.0.13]"
+              "version": "[8.0.17, 8.0.17]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.13, 8.0.13]"
+              "version": "[8.0.17, 8.0.17]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.13, 8.0.13]"
+              "version": "[8.0.17, 8.0.17]"
             }
           ],
           "frameworkReferences": {
@@ -83,7 +83,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.205/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

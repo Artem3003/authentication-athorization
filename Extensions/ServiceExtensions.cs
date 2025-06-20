@@ -1,11 +1,15 @@
 using System.Text;
 using EmailService;
 using IdentityUserRegistration.Entities;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using UserLockoutIdentity;
+using Casdoor.AspNetCore.Authentication;
+using System.Security.Claims;
+using Newtonsoft.Json.Linq;
 
 namespace IdentityUserRegistration.Extensions;
 
@@ -83,5 +87,18 @@ public static class ServiceExtensions
         var emailConfig = configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
         services.AddSingleton(emailConfig!);
         services.AddScoped<IEmailSender, EmailSender>();
+    }
+
+    public static void ConfigureCasdoor(this IServiceCollection services, IConfiguration configuration)
+    {
+        var casdoorSection = configuration.GetSection("Casdoor");
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = "Casdoor";
+        })
+        .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCasdoor(configuration.GetSection("Casdoor"));
     }
 }

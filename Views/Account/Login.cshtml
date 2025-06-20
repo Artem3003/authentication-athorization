@@ -32,6 +32,10 @@
                     @Html.DisplayNameFor(m => m.RememberMe)
                 </label>
             </div>
+            <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Casdoor" class="btn w-100 mb-3 p-2 text-white" style="background-color: #6f42c1;">
+                <img src="../images/casdoor.png" alt="Register with Casdoor" style="height: 25px;">
+                Login with Casdoor
+            </a>
             <input type="submit" value="Login" class="btn btn-success w-100 p-2" />
             <p class="text-center mt-2">
                 Don't have an account? <a asp-controller="Account" asp-action="Register" class="text-decoration-none">Register</a>

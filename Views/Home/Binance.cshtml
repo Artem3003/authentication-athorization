@@ -1,0 +1,61 @@
+@{
+    ViewData["Title"] = "Binance";
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="alert alert-info">
+        <p>Welcome back, @User.Identity.Name!</p>
+        <h2>Real-Time Crypto Prices</h2>
+        <ul id="prices">
+            <li>BTC: <span id="btcPrice">Loading...</span></li>
+            <li>ETH: <span id="ethPrice">Loading...</span></li>
+            <li>SOL: <span id="solPrice">Loading...</span></li>
+        </ul>
+
+        <button class="btn btn-outline-info" id="startBtn">Start Tracking</button>
+        <button class="btn btn-outline-info" id="stopBtn">Stop Tracking</button>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <p>Please <a href="/Account/Login">log in</a> to access this page.</p>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.9/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/priceHub")
+            .build();
+
+        connection.on("ReceivePrice", (symbol, price) => {
+            switch (symbol) {
+                case "BTCUSDT":
+                    document.getElementById("btcPrice").innerText =  parseFloat(price).toFixed(2);
+                    break;
+                case "ETHUSDT":
+                    document.getElementById("ethPrice").innerText =  parseFloat(price).toFixed(2);
+                    break;
+                case "SOLUSDT":
+                    document.getElementById("solPrice").innerText =  parseFloat(price).toFixed(2);
+                    break;
+            }
+        });
+
+        connection.start().then(() => {
+            console.log("Connected to SignalR hub");
+        })
+        .catch(err => {
+            console.error("SignalR connection error:", err);
+        });
+
+        document.getElementById("startBtn").addEventListener("click", async () => 
+            await fetch('/Crypto/StartTracking'));
+
+        document.getElementById("stopBtn").addEventListener("click", async () => 
+            await fetch('/Crypto/StopTracking'));
+    </script>
+}

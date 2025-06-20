@@ -60,6 +60,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"kchpouad5e"},{"Name":"integrity","Value":"sha256-FFSVQlV/uJcnlhjED\u002B85JibDP2hCCD6Nl59Z9dYn/GA="},{"Name":"label","Value":"_content/authentication-athorization/images/background.jpg"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"763784"},{"Name":"Content-Type","Value":"image/jpeg"},{"Name":"ETag","Value":"\u0022FFSVQlV/uJcnlhjED\u002B85JibDP2hCCD6Nl59Z9dYn/GA=\u0022"},{"Name":"Last-Modified","Value":"Tue, 25 Feb 2025 16:58:43 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/authentication-athorization/images/casdoor.o2ba4rhxip.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\casdoor.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"o2ba4rhxip"},{"Name":"integrity","Value":"sha256-cIlGgoQB73OLShDMYwKdlOg1MHwJSXSxKerV9NxI1uw="},{"Name":"label","Value":"_content/authentication-athorization/images/casdoor.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"38624"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022cIlGgoQB73OLShDMYwKdlOg1MHwJSXSxKerV9NxI1uw=\u0022"},{"Name":"Last-Modified","Value":"Tue, 22 Apr 2025 09:35:55 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/authentication-athorization/images/casdoor.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\images\casdoor.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-cIlGgoQB73OLShDMYwKdlOg1MHwJSXSxKerV9NxI1uw="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"38624"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022cIlGgoQB73OLShDMYwKdlOg1MHwJSXSxKerV9NxI1uw=\u0022"},{"Name":"Last-Modified","Value":"Tue, 22 Apr 2025 09:35:55 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/authentication-athorization/js/site.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

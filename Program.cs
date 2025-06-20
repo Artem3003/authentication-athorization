@@ -2,6 +2,7 @@ using IdentityUserRegistration.JwtFeatures;
 using IdentityUserRegistration.Extensions;
 using IdentityUserRegistration.Interfaces;
 using IdentityUserRegistration.Services;
+using authentication_athorization.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +13,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureSQLContext(builder.Configuration);
 builder.Services.ConfigureEmailService(builder.Configuration);
 builder.Services.ConfigureIdentity();
+builder.Services.AddSignalR();
 // builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureAuthorization();
+builder.Services.ConfigureCasdoor(builder.Configuration);
 
 builder.Services.AddSingleton<ITotpService, TotpService>();
 
@@ -29,6 +32,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseWebSockets();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -40,6 +45,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<PriceHub>("/priceHub");
 
 app.MapControllers();
 
